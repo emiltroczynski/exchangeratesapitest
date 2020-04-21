@@ -30,6 +30,5 @@ namespace TaskFromGain.Steps
         {
             Assert.AreEqual(expectedText, reversedText, "Returned text is not valid");
         }
-
     }
 }

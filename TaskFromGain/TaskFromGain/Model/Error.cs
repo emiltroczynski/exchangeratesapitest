@@ -12,6 +12,7 @@ namespace TaskFromGain.Model
         {
             JObject jObject = JObject.Parse(responseContent);
             ErrorMessage = jObject.GetValue("error").ToString();
+            //TODO: BadRequest can have also 'exception'
         }
     }
 }

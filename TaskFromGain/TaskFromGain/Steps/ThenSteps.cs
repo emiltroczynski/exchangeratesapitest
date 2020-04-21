@@ -16,61 +16,30 @@ namespace TaskFromGain.Steps
         {
             this.responseContext = responseContext;
         }
+
         [Then(@"I receive response with ""(.*)"" currency and (.*) exchange rates")]
         public void ThenIReceiveResponseWithCurrencyAndExchangeRates(string currency, int exchangeRates)
         {
-            ForeignExchangeRates expectedJson = new ForeignExchangeRates
-            {
-                BaseCurrency = currency,
-                ExchangeDate = DateHelper.GetLastBusinessDay(DateTime.Now),
-            };
-
+            ForeignExchangeRates expectedJson = CreateExpectedJSon(DateHelper.GetLastBusinessDay(DateTime.Now), currency);
             ForeignExchangeRates actualJson = new ForeignExchangeRates(responseContext.responseContent);
 
-            Assert.Multiple(() =>
-            {
-                Assert.AreEqual(HttpStatusCode.OK, responseContext.httpStatusCode);
-                Assert.AreEqual(expectedJson.BaseCurrency, actualJson.BaseCurrency, "BaseCurrency is not valid");
-                Assert.AreEqual(expectedJson.ExchangeDate, actualJson.ExchangeDate, "ExchangeDate is not valid");
-                Assert.AreEqual(exchangeRates, actualJson.Curriencies.GetCurrienciesCount(), "Curriencies count is not equal");
-            });
+
+            ValidateDefaultResponse(expectedJson, actualJson, exchangeRates);
         }
 
         [Then(@"I receive response with ""(.*)"" currency and (.*) exchange rates and with ""(.*)"" date")]
         public void ThenIReceiveResponseWithCurrencyAndExchangeRates(string currency, int exchangeRates, string date)
         {
-            int[] validDate = Array.ConvertAll(date.Split('-'), int.Parse);
-
-            ForeignExchangeRates expectedJson = new ForeignExchangeRates
-            {
-                BaseCurrency = currency,
-                ExchangeDate = new DateTime(validDate[0], validDate[1], validDate[2])
-            };
-
+            ForeignExchangeRates expectedJson = CreateExpectedJSon(date, currency);
             ForeignExchangeRates actualJson = new ForeignExchangeRates(responseContext.responseContent);
 
-            Assert.Multiple(() =>
-            {
-                Assert.AreEqual(HttpStatusCode.OK, responseContext.httpStatusCode);
-                Assert.AreEqual(expectedJson.BaseCurrency, actualJson.BaseCurrency, "BaseCurrency is not valid");
-                Assert.AreEqual(expectedJson.ExchangeDate, actualJson.ExchangeDate, "ExchangeDate is not valid");
-                Assert.AreEqual(exchangeRates, actualJson.Curriencies.GetCurrienciesCount(), "Curriencies count is not equal");
-            });
+            ValidateDefaultResponse(expectedJson, actualJson, exchangeRates);
         }
 
         [Then(@"I receive response with ""(.*)"" start: ""(.*)"" end: ""(.*)"" and (.*) days")]
         public void ThenIReceiveResponseWithStartEndAndDays(string currency, string startDate, string endDate, int numberOfDays)
         {
-            int[] startDateArray = Array.ConvertAll(startDate.Split('-'), int.Parse);
-            int[] endDateArray = Array.ConvertAll(endDate.Split('-'), int.Parse);
-
-            ForeignExchangeRates expectedJson = new ForeignExchangeRates
-            {
-                BaseCurrency = currency,
-                StartAt = new DateTime(startDateArray[0], startDateArray[1], startDateArray[2]),
-                EndAt = new DateTime(endDateArray[0], endDateArray[1], endDateArray[2]),
-            };
-
+            ForeignExchangeRates expectedJson = CreateExpectedJSon(startDate, endDate, currency);
             ForeignExchangeRates actualJson = new ForeignExchangeRates(responseContext.responseContent);
 
             Assert.Multiple(() =>
@@ -87,16 +56,7 @@ namespace TaskFromGain.Steps
         [Then(@"I receive response with ""(.*)"" start: ""(.*)"" end: ""(.*)"" and (.*) currencies")]
         public void ThenIReceiveResponseWithStartEndAndCurrencies(string currency, string startDate, string endDate, int numberOfCurrencies)
         {
-            int[] startDateArray = Array.ConvertAll(startDate.Split('-'), int.Parse);
-            int[] endDateArray = Array.ConvertAll(endDate.Split('-'), int.Parse);
-
-            ForeignExchangeRates expectedJson = new ForeignExchangeRates
-            {
-                BaseCurrency = currency,
-                StartAt = new DateTime(startDateArray[0], startDateArray[1], startDateArray[2]),
-                EndAt = new DateTime(endDateArray[0], endDateArray[1], endDateArray[2]),
-            };
-
+            ForeignExchangeRates expectedJson = CreateExpectedJSon(startDate, endDate, currency);
             ForeignExchangeRates actualJson = new ForeignExchangeRates(responseContext.responseContent);
 
             Assert.Multiple(() =>
@@ -129,7 +89,7 @@ namespace TaskFromGain.Steps
         public void ThenIReceiveErrorMessageWithCurrencyAndLatestDate(string currencies)
         {
             string date = DateTime.Now.ToString("yyyy-MM-dd");
-            string expectedMessage = "Symbols '" + currencies +"' are invalid for date " + date + ".";
+            string expectedMessage = "Symbols '" + currencies + "' are invalid for date " + date + ".";
 
             Error expectedError = new Error
             {
@@ -141,6 +101,43 @@ namespace TaskFromGain.Steps
             ValidateErrorMessage(expectedError, actualError);
         }
 
+        private ForeignExchangeRates CreateExpectedJSon(DateTime date, string currency)
+        {
+            ForeignExchangeRates expectedJson = new ForeignExchangeRates
+            {
+                BaseCurrency = currency,
+                ExchangeDate = date
+            };
+
+            return expectedJson;
+        }
+
+        private ForeignExchangeRates CreateExpectedJSon(string date, string currency)
+        {
+            int[] validDate = ConvertDate(date);
+            ForeignExchangeRates expectedJson = new ForeignExchangeRates
+            {
+                BaseCurrency = currency,
+                ExchangeDate = new DateTime(validDate[0], validDate[1], validDate[2])
+            };
+
+            return expectedJson;
+        }
+
+        private ForeignExchangeRates CreateExpectedJSon(string startDate, string endDate, string currency)
+        {
+            int[] startDateArray = ConvertDate(startDate);
+            int[] endDateArray = ConvertDate(endDate);
+            ForeignExchangeRates expectedJson = new ForeignExchangeRates
+            {
+                BaseCurrency = currency,
+                StartAt = new DateTime(startDateArray[0], startDateArray[1], startDateArray[2]),
+                EndAt = new DateTime(endDateArray[0], endDateArray[1], endDateArray[2]),
+            };
+
+            return expectedJson;
+        }
+
         private void ValidateErrorMessage(Error expectedError, Error actualError)
         {
             Assert.Multiple(() =>
@@ -148,6 +145,22 @@ namespace TaskFromGain.Steps
                 Assert.AreEqual(HttpStatusCode.BadRequest, responseContext.httpStatusCode);
                 Assert.AreEqual(expectedError.ErrorMessage, actualError.ErrorMessage, "Error message is not valid");
             });
+        }
+
+        private void ValidateDefaultResponse(ForeignExchangeRates expectedJson, ForeignExchangeRates actualJson, int exchangeRates)
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(HttpStatusCode.OK, responseContext.httpStatusCode);
+                Assert.AreEqual(expectedJson.BaseCurrency, actualJson.BaseCurrency, "BaseCurrency is not valid");
+                Assert.AreEqual(expectedJson.ExchangeDate, actualJson.ExchangeDate, "ExchangeDate is not valid");
+                Assert.AreEqual(exchangeRates, actualJson.Curriencies.GetCurrienciesCount(), "Curriencies count is not equal");
+            });
+        }
+
+        private int[] ConvertDate(string date)
+        {
+            return Array.ConvertAll(date.Split('-'), int.Parse);
         }
     }
 }

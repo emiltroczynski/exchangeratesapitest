@@ -7,6 +7,10 @@ namespace TaskFromGain.ReverseTask
     {
         public static string Reverse(string text)
         {
+            if(string.IsNullOrWhiteSpace(text))
+            {
+                return "";
+            }
             return string.Join(" ", text.Split(" ").Reverse());
         }
     }

@@ -24,6 +24,8 @@ namespace TaskFromGain.Steps
             restRequest = new RestRequest(parameter);
         }
 
+        //TODO: move When to the separate class if needed
+        //for this project is unnecessary effort
         [When(@"I send request")]
         public void WhenISendRequest()
         {

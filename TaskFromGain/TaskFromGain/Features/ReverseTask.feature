@@ -26,3 +26,9 @@ Scenario: reverse two words
 	Given I have entered "the sky" into the reverse
 	When I execute Reverse
 	Then the result should be "sky the"
+
+#I added validation for white spaces, just to higlight that for real project I wouldn't miss that
+Scenario: empty string
+	Given I have entered "  " into the reverse
+	When I execute Reverse
+	Then the result should be ""

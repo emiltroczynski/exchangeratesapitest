@@ -28,11 +28,11 @@ namespace TaskFromGain.Model
 
             if (StartAt != null)
             {
-                RatesWithDays = create(jobject);
+                RatesWithDays = PopulateRatesWithDays(jobject);
             }
         }
 
-        private IList<RatesWithDays> create(JObject jobject)
+        private IList<RatesWithDays> PopulateRatesWithDays(JObject jobject)
         {
             IList<JToken> results = jobject["rates"].Children().Children().ToList();
             IList<RatesWithDays> searchResults = new List<RatesWithDays>();
