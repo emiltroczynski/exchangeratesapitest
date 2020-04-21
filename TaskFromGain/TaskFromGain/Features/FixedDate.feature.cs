@@ -274,11 +274,11 @@ this.ScenarioInitialize(scenarioInfo);
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("non existing day of month return error message")]
-        public virtual void NonExistingDayOfMonthReturnErrorMessage()
+        [NUnit.Framework.DescriptionAttribute("non existing day of month returns error message")]
+        public virtual void NonExistingDayOfMonthReturnsErrorMessage()
         {
             string[] tagsOfScenario = ((string[])(null));
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("non existing day of month return error message", null, ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("non existing day of month returns error message", null, ((string[])(null)));
 #line 31
 this.ScenarioInitialize(scenarioInfo);
 #line hidden

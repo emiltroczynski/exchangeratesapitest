@@ -6,7 +6,9 @@ namespace TaskFromGain.Helpers
     {
         internal static DateTime GetLastBusinessDay(DateTime dateTime)
         {
-            if (dateTime.Hour < 16)
+            //The reference rates are usually updated around 16:00 CET on every working day
+            //at 16.14 it hasn't worked
+            if (dateTime.Hour < 17)
             {
                 dateTime = dateTime.AddDays(-1);
             }

@@ -2,7 +2,7 @@
 
 namespace TaskFromGain.Model
 {
-    class Rates
+    class Curriencies
     {
         #region active curriencies
         public double AED { set; get; }
@@ -228,19 +228,19 @@ namespace TaskFromGain.Model
         public double VEF { set; get; }
         #endregion
 
-        internal int GetRatesCount()
+        internal int GetCurrienciesCount()
         {
-            int ratesCount = 0;
+            int currienciesCount = 0;
             PropertyInfo[] properties = this.GetType().GetProperties();
             foreach (var p in properties)
             {
                 if ((double)p.GetValue(this) != 0)
                 {
-                    ratesCount++;
+                    currienciesCount++;
                 }
             }
 
-            return ratesCount;
+            return currienciesCount;
         }
     }
 }

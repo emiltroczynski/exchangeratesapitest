@@ -32,7 +32,7 @@ namespace TaskFromGain.Steps
                 Assert.AreEqual(HttpStatusCode.OK, responseContext.httpStatusCode);
                 Assert.AreEqual(expectedJson.BaseCurrency, actualJson.BaseCurrency, "BaseCurrency is not valid");
                 Assert.AreEqual(expectedJson.ExchangeDate, actualJson.ExchangeDate, "ExchangeDate is not valid");
-                Assert.AreEqual(exchangeRates, actualJson.Rates.GetRatesCount(), "Numbers of rates are not equal");
+                Assert.AreEqual(exchangeRates, actualJson.Curriencies.GetCurrienciesCount(), "Curriencies count is not equal");
             });
         }
 
@@ -54,7 +54,61 @@ namespace TaskFromGain.Steps
                 Assert.AreEqual(HttpStatusCode.OK, responseContext.httpStatusCode);
                 Assert.AreEqual(expectedJson.BaseCurrency, actualJson.BaseCurrency, "BaseCurrency is not valid");
                 Assert.AreEqual(expectedJson.ExchangeDate, actualJson.ExchangeDate, "ExchangeDate is not valid");
-                Assert.AreEqual(exchangeRates, actualJson.Rates.GetRatesCount(), "Numbers of rates are not equal");
+                Assert.AreEqual(exchangeRates, actualJson.Curriencies.GetCurrienciesCount(), "Curriencies count is not equal");
+            });
+        }
+
+        [Then(@"I receive response with ""(.*)"" start: ""(.*)"" end: ""(.*)"" and (.*) days")]
+        public void ThenIReceiveResponseWithStartEndAndDays(string currency, string startDate, string endDate, int numberOfDays)
+        {
+            int[] startDateArray = Array.ConvertAll(startDate.Split('-'), int.Parse);
+            int[] endDateArray = Array.ConvertAll(endDate.Split('-'), int.Parse);
+
+            ForeignExchangeRates expectedJson = new ForeignExchangeRates
+            {
+                BaseCurrency = currency,
+                StartAt = new DateTime(startDateArray[0], startDateArray[1], startDateArray[2]),
+                EndAt = new DateTime(endDateArray[0], endDateArray[1], endDateArray[2]),
+            };
+
+            ForeignExchangeRates actualJson = new ForeignExchangeRates(responseContext.responseContent);
+
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(HttpStatusCode.OK, responseContext.httpStatusCode);
+                Assert.AreEqual(expectedJson.BaseCurrency, actualJson.BaseCurrency, "BaseCurrency is not valid");
+                Assert.AreEqual(expectedJson.ExchangeDate, actualJson.ExchangeDate, "ExchangeDate is not valid");
+                Assert.AreEqual(expectedJson.StartAt, actualJson.StartAt, "StartAt is not valid");
+                Assert.AreEqual(expectedJson.EndAt, actualJson.EndAt, "EndAt is not valid");
+                Assert.AreEqual(numberOfDays, actualJson.RatesWithDays.Count, "Days are not equal");
+            });
+        }
+
+        [Then(@"I receive response with ""(.*)"" start: ""(.*)"" end: ""(.*)"" and (.*) currencies")]
+        public void ThenIReceiveResponseWithStartEndAndCurrencies(string currency, string startDate, string endDate, int numberOfCurrencies)
+        {
+            int[] startDateArray = Array.ConvertAll(startDate.Split('-'), int.Parse);
+            int[] endDateArray = Array.ConvertAll(endDate.Split('-'), int.Parse);
+
+            ForeignExchangeRates expectedJson = new ForeignExchangeRates
+            {
+                BaseCurrency = currency,
+                StartAt = new DateTime(startDateArray[0], startDateArray[1], startDateArray[2]),
+                EndAt = new DateTime(endDateArray[0], endDateArray[1], endDateArray[2]),
+            };
+
+            ForeignExchangeRates actualJson = new ForeignExchangeRates(responseContext.responseContent);
+
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(HttpStatusCode.OK, responseContext.httpStatusCode);
+                Assert.AreEqual(expectedJson.BaseCurrency, actualJson.BaseCurrency, "BaseCurrency is not valid");
+                Assert.AreEqual(expectedJson.ExchangeDate, actualJson.ExchangeDate, "ExchangeDate is not valid");
+                Assert.AreEqual(expectedJson.StartAt, actualJson.StartAt, "StartAt is not valid");
+                Assert.AreEqual(expectedJson.EndAt, actualJson.EndAt, "EndAt is not valid");
+                Assert.AreEqual(numberOfCurrencies, actualJson.RatesWithDays.Count, "Days are not equal");
+                Assert.AreEqual(numberOfCurrencies, actualJson.RatesWithDays[0].Curriencies.GetCurrienciesCount(), "Currencies for day 1 are not equal");
+                Assert.AreEqual(numberOfCurrencies, actualJson.RatesWithDays[1].Curriencies.GetCurrienciesCount(), "Currencies for day 2 are not equal");
             });
         }
 
@@ -68,11 +122,7 @@ namespace TaskFromGain.Steps
 
             Error actualError = new Error(responseContext.responseContent);
 
-            Assert.Multiple(() =>
-            {
-                Assert.AreEqual(HttpStatusCode.BadRequest, responseContext.httpStatusCode);
-                Assert.AreEqual(expectedError.ErrorMessage, actualError.ErrorMessage, "Error message is not valid");
-            });
+            ValidateErrorMessage(expectedError, actualError);
         }
 
         [Then(@"I receive error message with ""(.*)"" currency and latest date")]
@@ -88,6 +138,11 @@ namespace TaskFromGain.Steps
 
             Error actualError = new Error(responseContext.responseContent);
 
+            ValidateErrorMessage(expectedError, actualError);
+        }
+
+        private void ValidateErrorMessage(Error expectedError, Error actualError)
+        {
             Assert.Multiple(() =>
             {
                 Assert.AreEqual(HttpStatusCode.BadRequest, responseContext.httpStatusCode);
