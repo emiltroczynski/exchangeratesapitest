@@ -17,8 +17,3 @@ Scenario: request with latest and symbol USD, GBP
 	Given I prepare request with "latest?symbols=USD,GBP" parameter
 	When I send request
 	Then I receive response with "EUR" currency and 2 exchange rates
-
-Scenario: request with latest and invalid symbols USA, GBB
-	Given I prepare request with "latest?symbols=USA,GBB" parameter
-	When I send request
-	Then I receive error message with "USA,GBB" currency and latest date

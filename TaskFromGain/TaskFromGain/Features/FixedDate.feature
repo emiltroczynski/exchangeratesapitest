@@ -27,13 +27,3 @@ Scenario: valid with fixed date and base currency
 	Given I prepare request with "2009-01-12?base=USD" parameter
 	When I send request
 	Then I receive response with "USD" currency and 34 exchange rates and with "2009-01-12" date
-
-Scenario: non existing day of month returns error message
-	Given I prepare request with "2011-02-29" parameter
-	When I send request
-	Then I receive error message: "day is out of range for month"
-
-Scenario: invalid date format returns error message
-	Given I prepare request with "2011-13-32" parameter
-	When I send request
-	Then I receive error message: "time data '2011-13-32' does not match format '%Y-%m-%d'"

@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace TaskFromGain.Features
+namespace TaskFromGain.Features.NegativeScenarios
 {
     using TechTalk.SpecFlow;
     using System;
@@ -20,23 +20,23 @@ namespace TaskFromGain.Features
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.1.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Latest")]
-    public partial class LatestFeature
+    [NUnit.Framework.DescriptionAttribute("NegativeHistory")]
+    public partial class NegativeHistoryFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
         private string[] _featureTags = ((string[])(null));
         
-#line 1 "Latest.feature"
+#line 1 "NegativeHistory.feature"
 #line hidden
         
         [NUnit.Framework.OneTimeSetUpAttribute()]
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Latest", "\tIn order to check exchange rates\r\n\tAs an user\r\n\tI want to get the latest exchang" +
-                    "e rates", ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "NegativeHistory", "\tIn order to check historical exchange rates\r\n\tAs an user\r\n\tI want to get the his" +
+                    "torical exchange rates", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -75,11 +75,11 @@ namespace TaskFromGain.Features
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("request with latest")]
-        public virtual void RequestWithLatest()
+        [NUnit.Framework.DescriptionAttribute("historical exchange rate with invalid symbols returns error message")]
+        public virtual void HistoricalExchangeRateWithInvalidSymbolsReturnsErrorMessage()
         {
             string[] tagsOfScenario = ((string[])(null));
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("request with latest", null, ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("historical exchange rate with invalid symbols returns error message", null, ((string[])(null)));
 #line 6
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -101,24 +101,25 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 7
- testRunner.Given("I prepare request with \"latest\" parameter", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("I prepare request with \"history?start_at=2018-01-03&end_at=2018-01-04&symbols=USA" +
+                        ",JPY\" parameter", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 8
  testRunner.When("I send request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 9
- testRunner.Then("I receive response with \"EUR\" currency and 32 exchange rates", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("I receive error message: \"Symbols \'USA,JPY\' are invalid.\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("request with latest and base=USD")]
-        public virtual void RequestWithLatestAndBaseUSD()
+        [NUnit.Framework.DescriptionAttribute("historical exchange rate with invalid start_at returns error message")]
+        public virtual void HistoricalExchangeRateWithInvalidStart_AtReturnsErrorMessage()
         {
             string[] tagsOfScenario = ((string[])(null));
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("request with latest and base=USD", null, ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("historical exchange rate with invalid start_at returns error message", null, ((string[])(null)));
 #line 11
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -140,24 +141,24 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 12
- testRunner.Given("I prepare request with \"latest?base=USD\" parameter", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("I prepare request with \"history?start_at=2018-13-03&end_at=2018-01-04\" parameter", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 13
  testRunner.When("I send request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 14
- testRunner.Then("I receive response with \"USD\" currency and 33 exchange rates", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("I receive error message: \"start_at parameter format\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("request with latest and symbol USD, GBP")]
-        public virtual void RequestWithLatestAndSymbolUSDGBP()
+        [NUnit.Framework.DescriptionAttribute("historical exchange rate with invalid end_at returns error message")]
+        public virtual void HistoricalExchangeRateWithInvalidEnd_AtReturnsErrorMessage()
         {
             string[] tagsOfScenario = ((string[])(null));
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("request with latest and symbol USD, GBP", null, ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("historical exchange rate with invalid end_at returns error message", null, ((string[])(null)));
 #line 16
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -179,13 +180,13 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 17
- testRunner.Given("I prepare request with \"latest?symbols=USD,GBP\" parameter", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("I prepare request with \"history?start_at=2018-01-03&end_at=2018-13-04\" parameter", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 18
  testRunner.When("I send request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 19
- testRunner.Then("I receive response with \"EUR\" currency and 2 exchange rates", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("I receive error message: \"end_at parameter format\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
