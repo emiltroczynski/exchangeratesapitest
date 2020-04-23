@@ -2,7 +2,6 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace TaskFromGain.Model
 {
@@ -19,7 +18,6 @@ namespace TaskFromGain.Model
         internal ForeignExchangeRates(string responseContent)
         {
             JObject jobject = JObject.Parse(responseContent);
-
             BaseCurrency = jobject.GetValue("base").ToString();
             ExchangeDate = jobject["date"] != null ? jobject.GetValue("date").ToObject<DateTime>() : (DateTime?)null;
             StartAt = jobject["start_at"] != null ? jobject.GetValue("start_at").ToObject<DateTime>() : (DateTime?)null;
@@ -34,21 +32,20 @@ namespace TaskFromGain.Model
 
         private IList<RatesWithDays> PopulateRatesWithDays(JObject jobject)
         {
-            IList<JToken> results = jobject["rates"].Children().Children().ToList();
-            IList<RatesWithDays> searchResults = new List<RatesWithDays>();
-            int index = 0;
-            foreach (JToken result in results)
-            {
-                RatesWithDays ratesWithDays = new RatesWithDays
-                {
-                    Curriencies = result.ToObject<Curriencies>(),
-                    DayOfExchange = (JObject.Parse(jobject.GetValue("rates").ToString()).Properties().Select(p => p.Name).ElementAt(index++))
-                };
+            IList<RatesWithDays> ratesWithDays = new List<RatesWithDays>();
 
-                searchResults.Add(ratesWithDays);
+            JObject rates = (JObject)jobject["rates"];
+            foreach (var rate in rates)
+            {
+                RatesWithDays singleDay = new RatesWithDays
+                {
+                    DayOfExchange = rate.Key,
+                    Curriencies = rate.Value.ToObject<Curriencies>()
+                };
+                ratesWithDays.Add(singleDay);
             }
 
-            return searchResults;
+            return ratesWithDays;
         }
     }
 }
